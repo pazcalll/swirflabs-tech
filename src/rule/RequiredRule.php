@@ -4,7 +4,7 @@ namespace Src\Rule;
 
 class RequiredRule implements RuleInterface
 {
-    public function validate(string $field, mixed $value, $constraint = null): string|bool
+    public function validate(string $field, mixed $value = null, $constraint = null): string|bool
     {
         if (empty($value)) {
             return "This $field field is required.";

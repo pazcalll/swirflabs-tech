@@ -30,7 +30,7 @@ class Employee
 
     public function getAllEmployees()
     {
-        $query = "SELECT * FROM " . $this->table;
+        $query = "SELECT * FROM " . $this->table . " ORDER BY createdAt DESC";
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
         return $stmt;
@@ -49,16 +49,26 @@ class Employee
     {
         $query = "INSERT INTO "
             . $this->table
-            . " (name, identificationNumber, address, occupation, place, dateOfBirth)"
-            . " VALUES (:name, :identificationNumber, :address, :occupation, :place, :dateOfBirth)";
+            . " (name, identificationNumber, address, occupation, place, dateOfBirth, createdAt)"
+            . " VALUES (:name, :identificationNumber, :address, :occupation, :place, :dateOfBirth, :createdAt)";
         $stmt = $this->conn->prepare($query);
+        
+        // Assign function calls to variables before using them
+        $name = @$employeeDto->getName();
+        $identificationNumber = @$employeeDto->getIdentificationNumber();
+        $address = @$employeeDto->getAddress();
+        $occupation = @$employeeDto->getOccupation();
+        $place = @$employeeDto->getPlace();
+        $dateOfBirth = @$employeeDto->getDateOfBirth();
+        $createdAt = date('Y-m-d H:i:s');
 
-        $stmt->bindParam(':name', $employeeDto->getName());
-        $stmt->bindParam(':identificationNumber', $employeeDto->getIdentificationNumber());
-        $stmt->bindParam(':address', $employeeDto->getAddress());
-        $stmt->bindParam(':occupation', $employeeDto->getOccupation());
-        $stmt->bindParam(':place', $employeeDto->getPlace());
-        $stmt->bindParam(':dateOfBirth', $employeeDto->getDateOfBirth());
+        $stmt->bindParam(':name', $name);
+        $stmt->bindParam(':identificationNumber', $identificationNumber);
+        $stmt->bindParam(':address', $address);
+        $stmt->bindParam(':occupation', $occupation);
+        $stmt->bindParam(':place', $place);
+        $stmt->bindParam(':dateOfBirth', $dateOfBirth);
+        $stmt->bindParam(':createdAt', $createdAt);
 
         if ($stmt->execute()) {
             return true;

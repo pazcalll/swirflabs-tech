@@ -10,7 +10,8 @@ class EmployeeDto implements \JsonSerializable
         $address,
         $occupation,
         $place,
-        $dateOfBirth
+        $dateOfBirth,
+        $createdAt
     ;
 
     public function __construct(
@@ -20,6 +21,7 @@ class EmployeeDto implements \JsonSerializable
         $occupation = null,
         $place = null,
         $dateOfBirth = null,
+        $createdAt = null,
     )
     {
         $this->name = $name;
@@ -61,6 +63,11 @@ class EmployeeDto implements \JsonSerializable
         return $this->dateOfBirth;
     }
 
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+
     public function setName($name)
     {
         $this->name = $name;
@@ -91,6 +98,11 @@ class EmployeeDto implements \JsonSerializable
         $this->dateOfBirth = $dateOfBirth;
     }
 
+    public function setCreatedAt($createdAt)
+    {
+        $this->createdAt = $createdAt;
+    }
+
     public function jsonSerialize(): mixed
     {
         return [
@@ -100,6 +112,7 @@ class EmployeeDto implements \JsonSerializable
             'occupation' => $this->occupation,
             'place' => $this->place,
             'dateOfBirth' => $this->dateOfBirth,
+            'createdAt' => $this->createdAt,
         ];
     }
 }

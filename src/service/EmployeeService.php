@@ -68,6 +68,7 @@ class EmployeeService
                 $row['occupation'],
                 $row['place'],
                 $row['dateOfBirth'],
+                $row['createdAt'],
             );
         }
 
@@ -84,29 +85,30 @@ class EmployeeService
             $stmt['occupation'],
             $stmt['place'],
             $stmt['dateOfBirth'],
+            $stmt['createdAt'],
         );
     }
 
     public function storeEmployee(array $data): EmployeeDto
     {
         $this->employeeRequest = new EmployeeRequest(
-            $data['name'],
-            $data['identificationNumber'],
-            $data['address'],
-            $data['occupation'],
-            $data['place'],
-            $data['dateOfBirth']
+            @$data['name'],
+            @$data['identificationNumber'],
+            @$data['address'],
+            @$data['occupation'],
+            @$data['place'],
+            @$data['dateOfBirth']
         );
 
         $this->employeeRequest->validate();
 
         $this->employeeDto = new EmployeeDto(
-            $this->employeeRequest->getName(),
-            $this->employeeRequest->getIdentificationNumber(),
-            $this->employeeRequest->getAddress(),
-            $this->employeeRequest->getOccupation(),
-            $this->employeeRequest->getPlace(),
-            $this->employeeRequest->getDateOfBirth(),
+            @$this->employeeRequest->getName(),
+            @$this->employeeRequest->getIdentificationNumber(),
+            @$this->employeeRequest->getAddress(),
+            @$this->employeeRequest->getOccupation(),
+            @$this->employeeRequest->getPlace(),
+            @$this->employeeRequest->getDateOfBirth(),
         );
 
         $this->employeeModel->storeEmployee($this->employeeDto);

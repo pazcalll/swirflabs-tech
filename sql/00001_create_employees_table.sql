@@ -5,5 +5,6 @@ CREATE TABLE employees (
 	occupation ENUM('unemployed', 'programmer', 'designer', 'architect', 'artist') NOT NULL,
 	place VARCHAR(32) NOT NULL,
 	dateOfBirth DATE NOT NULL,
+	createdAt TIMESTAMP,
 	PRIMARY KEY (identificationNumber)
 )

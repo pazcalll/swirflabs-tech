@@ -56,8 +56,9 @@ use Src\Model\Employee;
             </div>
         </form>
         <div class="form-group" style="display: flex; justify-content: space-between; flex-direction: row;">
-            <button type="button" class="btn btn-primary" style="width: 100%" onclick="submit(event)">Submit</button>
-            <button type="reset" class="btn btn-secondary" style="width: 100%">Reset</button>
+            <p id="loading" style="display: none;">Loading...</p>
+            <button type="button" class="btn btn-primary submission" style="width: 100%" onclick="submit(event)">Submit</button>
+            <button type="reset" class="btn btn-secondary submission" style="width: 100%">Reset</button>
         </div>
 
         <div style="max-width: 100%; overflow-x: auto;">
@@ -98,11 +99,19 @@ use Src\Model\Employee;
             const form = document.getElementById('employeeForm');
             const formData = new FormData(form); // Create a FormData object from the form
 
+            const button = document.querySelectorAll('.submission');
+            const loading = document.getElementById('loading');
+
+            button.forEach(item => {
+                item.style.display = 'none'; // Hide the button while loading
+            });
+            loading.style.display = 'block'; // Show the loading text
             const res = await fetch('/api/employee/store', {
                 method: 'POST',
                 body: formData,
                 headers: {
-                    'Accept': 'application/json'
+                    'Accept': 'application/json',
+                    // 'Content-Type': 'application/json'
                 }
             })
             if (!res.ok) {
@@ -116,6 +125,10 @@ use Src\Model\Employee;
                 form.reset(); // Reset the form after successful submission
                 fetchEmployees(); // Refresh the employee list
             }
+            button.forEach(item => {
+                item.style.display = 'block'; // Hide the button while loading
+            });
+            loading.style.display = 'none'; // Hide the loading text
         }
 
         async function fetchEmployees() {
