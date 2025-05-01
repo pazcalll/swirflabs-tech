@@ -1,0 +1,15 @@
+{
+    "name": "yazee/swirflabs-tech",
+    "autoload": {
+        "psr-4": {
+            "Src\\": "Src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "pazcalll",
+            "email": "yazeedarifin@gmail.com"
+        }
+    ],
+    "require": {}
+}
