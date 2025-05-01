@@ -17,10 +17,7 @@ class EmployeeController extends Controller
 
     public function index()
     {
-        $data = $this->employeeService->getAllEmployees();
-        $this->loadView('index', [
-            'employees' => $data,
-        ]);
+        $this->loadView('index');
     }
 
     public function store($data)
