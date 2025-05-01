@@ -20,7 +20,7 @@ use Src\Model\Employee;
                 echo $_SESSION['alert']->render();
             }
         ?>
-        <form action="/employee/store" id="employeeForm" style="margin-bottom: 1rem;" method="POST">
+        <form id="employeeForm" style="margin-bottom: 1rem;" action="javascript:void(0);">
             <div class="form-group">
                 <label for="identificationNumber">Identification Number</label>
                 <input type="text" id="identificationNumber" name="identificationNumber" class="form-control" placeholder="Enter Identification Number" required>
@@ -56,8 +56,8 @@ use Src\Model\Employee;
             </div>
         </form>
         <div class="form-group" style="display: flex; justify-content: space-between; flex-direction: row;">
-            <button type="submit" class="btn btn-primary" style="width: 100%" form="employeeForm">Submit</button>
-            <button type="reset" class="btn btn-secondary" style="width: 100%" form="employeeForm">Reset</button>
+            <button type="button" class="btn btn-primary" style="width: 100%" onclick="submit(event)">Submit</button>
+            <button type="reset" class="btn btn-secondary" style="width: 100%">Reset</button>
         </div>
 
         <div style="max-width: 100%; overflow-x: auto;">
@@ -71,24 +71,7 @@ use Src\Model\Employee;
                     </tr>
                 </thead>
                 <tbody class="tbody" id="employeeTable">
-                    <?php foreach ($employees as $employee): ?>
-                        <tr class="tr">
-                            <td><?= htmlspecialchars($employee->getIdentificationNumber()) ?></td>
-                            <td style="width: 30%; text-align: right;"><?= htmlspecialchars($employee->getName()) ?></td>
-                            <td style="width: 10%; text-align: center; font-size: <?php echo 12 * 1.2; ?>pt">
-                                <?php
-                                    $dateOfBirth = $employee->getDateOfBirth();
-                                    $currentDate = new DateTime();
-                                    $birthDate = new DateTime($dateOfBirth);
-                                    $age = $currentDate->diff($birthDate)->y;
-                                    echo htmlspecialchars($age) . " years old";
-                                ?>
-                            <td style="width: 40%;"><?= htmlspecialchars($employee->getAddress()) ?></td>
-                            <td style="width: 20%; text-align: right;"><?= htmlspecialchars($employee->getOccupation()) ?></td>
-                            <td><?= htmlspecialchars($employee->getPlace()) ?></td>
-                            <td><?= htmlspecialchars($employee->getDateOfBirth()) ?></td>
-                        </tr>
-                    <?php endforeach; ?>
+                    
                 </tbody>
             </table>
         </div>
@@ -108,6 +91,33 @@ use Src\Model\Employee;
 
             return age;
         }
+
+        async function submit(e) {
+            e.preventDefault(); // Prevent the default form submission
+
+            const form = document.getElementById('employeeForm');
+            const formData = new FormData(form); // Create a FormData object from the form
+
+            const res = await fetch('/api/employee/store', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'Accept': 'application/json'
+                }
+            })
+            if (!res.ok) {
+                const errorData = await res.json();
+                console.log('Error:', errorData); // Debugging line
+                alert(`Error: ${errorData.message}`); // Display the error message
+            } else {
+                const data = await res.json(); // Parse the JSON response
+                console.log('Success:', data); // Debugging line
+                alert(data.message); // Display the success message
+                form.reset(); // Reset the form after successful submission
+                fetchEmployees(); // Refresh the employee list
+            }
+        }
+
         async function fetchEmployees() {
             try {
                 const res = await fetch('/api/employee', {
@@ -123,17 +133,16 @@ use Src\Model\Employee;
                 }
 
                 const data = await res.json(); // Parse the JSON response
-                const returnable = () => {
-                    return data.map(employee => {
-                        return `
-                            <tr class="tr">
-                                <td style="width: 30%; text-align: right;">${employee.name}</td>
-                                <td style="width: 10%; text-align: center; font-size: 12pt">${calculateAge(employee.dateOfBirth)} years old</td>
-                                <td style="width: 40%;">${employee.address}</td>
-                                <td style="width: 20%; text-align: right;">${employee.occupation}</td>
-                            </tr>`;
-                    }).join('');
-                }
+                const returnable = data.employee.map(item => {
+                    return `
+                        <tr class="tr">
+                            <td style="width: 30%; text-align: right;">${item.name}</td>
+                            <td style="width: 10%; text-align: center; font-size: 12pt">${calculateAge(item.dateOfBirth)} years old</td>
+                            <td style="width: 40%;">${item.address}</td>
+                            <td style="width: 20%; text-align: right;">${item.occupation}</td>
+                        </tr>`;
+                }).join('');
+                document.getElementById('employeeTable').innerHTML = returnable;
             } catch (error) {
                 console.error('Error fetching employees:', error);
             }

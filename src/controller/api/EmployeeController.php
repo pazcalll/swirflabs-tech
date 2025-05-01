@@ -17,7 +17,7 @@ class EmployeeController extends Api
     public function index()
     {
         $data = $this->employeeService->getAllEmployees();
-        $this->jsonResponse(['data' => $data]);
+        $this->jsonResponse(['employee' => $data]);
     }
 
     public function store($data)

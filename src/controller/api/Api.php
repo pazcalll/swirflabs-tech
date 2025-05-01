@@ -11,6 +11,7 @@ class Api
 
         // Set the content type to JSON
         header('Content-Type: application/json');
+        header('Accept: application/json');
 
         // Output the JSON-encoded response
         echo json_encode($response);
